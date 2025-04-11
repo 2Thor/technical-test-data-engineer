@@ -13,7 +13,7 @@ ENDPOINTS = [
     "users",
     "listen_history"
 ]
-OUPUT_FILES = {
+OUTPUT_FILES = {
     "tracks": "tracks_data",
     "users": "users_data",
     "listen_history": "listen_history_data"
@@ -97,7 +97,7 @@ def get_output_filename(base_name: str) -> str:
 
 def run_pipeline(endpoints:list):
     for endpoint in endpoints:
-        output_file = get_output_filename(OUPUT_FILES[endpoint])
+        output_file = get_output_filename(OUTPUT_FILES[endpoint])
         fetch_from_endpoint(endpoint,output_file)
     return 0
 
