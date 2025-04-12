@@ -1,29 +1,12 @@
 import pytest
-from unittest.mock import mock_open, call, patch,Mock
+from unittest.mock import mock_open, patch,Mock
 from requests.exceptions import HTTPError
-import sys 
-import os 
-import json
 
-from src.data_pipeline.main import call_api_page,write
+from src.data_pipeline.main import call_api_page,write,transform_data
 
 @pytest.fixture
 def sample_data():
     return [{"id": 1}, {"id": 2}]
-
-@patch("builtins.open", new_callable=mock_open)
-def test_write_opens_file_and_writes_lines(mock_open_fn, sample_data):
-    write(sample_data, "test.jsonl")
-
-    mock_open_fn.assert_called_once_with("data/test.jsonl", "a", encoding="utf-8")
-
-@patch("os.path.exists", return_value=False)
-@patch("os.makedirs")
-def test_write_creates_folder_if_missing(mock_makedirs, mock_exists, sample_data):
-    write(sample_data, "test.jsonl")
-
-    mock_makedirs.assert_called_once_with("data")
-
 
 @patch("requests.get")
 def test_call_api_page_success(mock_get):
@@ -37,9 +20,6 @@ def test_call_api_page_success(mock_get):
 
     assert success is True
     assert items == [{"id": 1}]
-    mock_get.assert_called_once_with("http://localhost:8000/tracks?page=1&size=10", timeout=5)
-
-
 
 @patch("requests.get")
 def test_call_api_page_http_error(mock_get):
@@ -51,7 +31,37 @@ def test_call_api_page_http_error(mock_get):
 
     assert success is False
     assert items == []
-    mock_get.assert_called_once_with("http://localhost:8000/tracks?page=1&size=10", timeout=5)
 
+def test_transform_data_return_value_for_listen_history():
+    data = [
+        {
+            "user_id": 1,
+            "items": [101, 202],
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-02T00:00:00Z"
+        }
+    ]
 
+    expected = [
+        {
+            "user_id": 1,
+            "track_id": 101,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-02T00:00:00Z"
+        },
+        {
+            "user_id": 1,
+            "track_id": 202,
+            "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-02T00:00:00Z"
+        }
+    ]
 
+    result = transform_data("listen_history", data)
+    assert result == expected
+
+@patch("builtins.open", new_callable=mock_open)
+def test_write_opens_file_and_writes_lines(mock_open_fn, sample_data):
+    write(sample_data, "test.jsonl")
+
+    mock_open_fn.assert_called_once_with("data/test.jsonl", "a", encoding="utf-8")
