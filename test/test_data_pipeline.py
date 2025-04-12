@@ -1,12 +1,10 @@
 from unittest.mock import mock_open, patch,Mock
 from requests.exceptions import HTTPError
-from prefect import flow
 from prefect.logging import disable_run_logger
 from src.data_pipeline.main import call_api_page,write_to_jsonl,get_output_filename
 from src.data_pipeline.transform import main
 from datetime import datetime
 import pytest
-
 
 
 @pytest.fixture
