@@ -42,8 +42,8 @@ WAIT_SECONDS = 1
 def fetch_from_endpoint(endpoint : str,output_file : str):
     """
     Takes an endpoint as paramater and fetch data with pagination from this source
-    Call transform_endpoint function to transform data
-    Call write functin to write in json file
+    Call transform_data function from transform module to transform data
+    Call write function to write in json file
     """
     page = 1
 
@@ -72,10 +72,13 @@ def fetch_from_endpoint(endpoint : str,output_file : str):
         page += 1
 
 def call_api_page(endpoint: str, page: int, size: int) -> tuple[bool, list]:
+    """
+    Call one page and return data or errors 
+    """
     url = f"{BASE_URL}/{endpoint}?page={page}&size={size}"
     try:
         response = requests.get(url, timeout=5)
-        response.raise_for_status() # If error > 400 is raised try is failed and fall in except
+        response.raise_for_status() # If an error > 400 is raised then try is failed and fall in except
         data = response.json()
         items = data.get("items", [])
         return True, items

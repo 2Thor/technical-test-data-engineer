@@ -2,8 +2,11 @@
 test: venv
 	.venv/bin/pytest -v
 
-run: venv
+run_pipeline: venv
 	PYTHONPATH=. .venv/bin/python src/data_pipeline/main.py
+
+run_api: venv
+	cd src/moovitamix_fastapi && ../../.venv/bin/python -m uvicorn main:app
 	
 venv: .venv/bin/activate
 
