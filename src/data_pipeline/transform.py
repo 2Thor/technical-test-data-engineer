@@ -1,12 +1,14 @@
+from prefect import task
 
+@task
 def transform_tracks(data : list) -> list:
     return data
 
-
+@task
 def transform_users(data : list) -> list:
     return data
 
-
+@task
 def transform_listen_history(data: list) -> list:
     flattened = []
 
