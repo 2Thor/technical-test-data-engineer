@@ -34,6 +34,8 @@ Lancer les tests :
 make test
 ```
 
+Pour accéder à l'UI de Prefect : http://127.0.0.1:4200
+
 ## Questions (étapes 4 à 7)
 
 ### Étape 4
