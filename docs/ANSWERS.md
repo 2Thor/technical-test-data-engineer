@@ -133,3 +133,5 @@ Utilisation de métriques pour évaluer le modèle et déterminer s’il possèd
 **Déploiement / mise en production :**
 
 Versionnage et sauvegarde du modèle (utilisation d’outils comme MLflow).
+
+# Pour information, l'IA a été utilisé pour générer du code
