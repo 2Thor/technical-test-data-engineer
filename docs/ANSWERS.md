@@ -40,7 +40,7 @@ make test
 
 _Détailler le schéma de la base de données que vous utiliseriez pour stocker les informations récupérées des trois sources de données mentionnées plus tôt. Quel système de base de données recommanderiez-vous pour répondre à ces besoins et pourquoi?_
 
-Nous avons des données structurées, instictivement je pense donc à du SQL qui est le type de base de données le plus populaire dans ce domaine. Je pense qu'il convient complétement dans dans notre architecture. Les données ont des relations fortes , il est possible d'utiliser une contrainte d'unicité lorsque qu'une requête d'insertion est faite à la base avec ON CONFLICT DO NOTHING ou d'update comme ON CONFLICT DO UPDATE pour éviter de surcharger la base de données avec des data en double. Enfin dans le contexte plus global de notre architecture cela permet d'avoir une base de données **source vérité** qui peux nous être utilse par la suite. Bien ques les base de donnée NOSQL peuvent avoir leur rôle à jouer dans des contextes spécifique ( rapidité, scalabilité ), ici une base de donnée SQL est plus intéressante. Aujourd'hui je pense que choisir postgresql est une valeur sûre pour de la production comparé à d'autre noms comme MySQL ou SQLite ( je parle de base de données on pre-mise et ne prend pas en compte le cloud )
+Nous avons des données structurées, instictivement je pense donc à du SQL qui est le type de base de données le plus populaire dans ce domaine. Je pense que ce type convient complétement dans notre architecture. Les données ont des relations fortes , il est possible d'utiliser une contrainte d'unicité lors d'une requête d'insertionest faite avec ON CONFLICT DO NOTHING ou d'update comme ON CONFLICT DO UPDATE pour éviter de surcharger la base de données avec des data en double. Enfin dans le contexte plus global de notre architecture cela permet d'avoir une base de données **source vérité** qui peux nous être utilse par la suite. Bien ques les base de donnée NOSQL peuvent avoir leur rôle à jouer dans des contextes spécifique ( rapidité, scalabilité ), ici une base de donnée SQL est plus intéressante. Aujourd'hui je pense que choisir postgresql est une valeur sûre pour de la production comparé à d'autre noms comme MySQL ou SQLite ( je parle de base de données on pre-mise et ne prend pas en compte le cloud )
 
 Schéma de la base de donnée :
 
@@ -58,7 +58,7 @@ La méthode de surveillance serait, pour moi, orientée dans trois directions :
 
 - Avoir des notifications pour les erreurs critiques, par exemple par email
 - Accès aux logs pour déboguer la pipeline de données si nécessaire
-- Accès à tableau de bord qui recapitule les métriques
+- Accès à un tableau de bord qui recapitule les métriques
 
 Ces deux éléments peuvent être mis en place via des outils comme **Grafana**, **Prometheus** ou **AWS CloudWatch**.
 
@@ -83,7 +83,7 @@ Ces deux éléments peuvent être mis en place via des outils comme **Grafana**,
 _Dessinez et/ou expliquez comment vous procèderiez pour automatiser le calcul des recommandations._
 
 Dans un premier temps, je pense que pour utiliser les données dans un contexte d'algorithme en production, il serait nécessaire d'avoir une autre base de données que PostgreSQL.  
-Je suggère un **data lake** de type **S3** pour accéder aux données facilement, que ce soit pour les **data scientists** ou les **modèles** par la suite.
+Je suggère un **data lake** de type **DuckDB** ou **S3** pour accéder aux données facilement, que ce soit pour les **data scientists** ou les **modèles** par la suite.
 
 Ensuite, pour le calcul des recommandations, il existe deux voies possibles :
 
