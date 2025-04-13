@@ -20,13 +20,16 @@ OUTPUT_FILES = {
 @task
 def get_output_filename(base_name: str) -> str:
     """
-    Getting output filename from the dictionnary OUTPUT_FILES
+    Generate output filename from the dictionnary OUTPUT_FILES
     """
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
     return f"{base_name}_{timestamp}.jsonl"
 
 @task(retries=1, retry_delay_seconds=5, timeout_seconds=10)
 def call_api_page(endpoint: str, page: int, size: int) -> List[dict]:
+    """
+    Call ONE page of the endpoint
+    """
     url = f"{BASE_URL}/{endpoint}?page={page}&size={size}"
     logger = get_run_logger()
     try:
@@ -52,12 +55,15 @@ def write_to_jsonl(data: List[dict], output_file: str):
 
 @task
 def fetch_endpoint(endpoint: str):
+    """
+    Handle the pipeline organization for one endpoint 
+    """
     logger = get_run_logger()
     logger.info(f"--- Début extraction : {endpoint} ---")
     page = 1
     output_file = get_output_filename(OUTPUT_FILES[endpoint])
 
-    while True:
+    while True: # Handle API pagination 
         items = call_api_page(endpoint, page, SIZE)
         if not items:
             logger.info(f"[{endpoint}] Fin de la pagination.")
@@ -75,10 +81,10 @@ def fetch_endpoint(endpoint: str):
 @flow(name="ETL Pipeline - Prefect")
 def run_pipeline(endpoints: List[str] = ENDPOINTS):
     for endpoint in endpoints:
-        fetch_endpoint.submit((endpoint))  # Exécution en parallèle
+        fetch_endpoint.submit((endpoint))  # Parallelize fetch_endpoint task
 
 if __name__ == "__main__":
     run_pipeline.serve(
         name="daily-etl",
-        schedule={"interval": 3600}  # toutes les 24h
+        schedule={"interval": 86400}  # Schedule task to be ruuning each 24hours
     )
