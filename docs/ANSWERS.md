@@ -25,7 +25,7 @@ make run_scheduler
 4. Lancer la tâche pour tester la pipeline de données
 
 ```
-make run_scheduler
+make run_pipeline
 ```
 
 Lancer les tests :
